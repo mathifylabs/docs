@@ -448,7 +448,10 @@
       "post": {
         "operationId": "createMessage",
         "summary": "Send a message and start a generation",
-        "description": "Starts an async generation job. Poll GET /fragments/{fragmentId} until animationUrl is non-null.",
+        "description": "Starts an async generation job.",
+        "x-mint": {
+          "content": "<Note>\nThis returns immediately with `status: \"generating\"` — it does not return the finished video. Poll `GET /fragments/{fragmentId}` until `animationUrl` is non-null.\n</Note>"
+        },
         "tags": [
           "Projects",
           "Messages"
@@ -823,7 +826,10 @@
       "post": {
         "operationId": "applyMusic",
         "summary": "Apply a music track to a rendered fragment",
-        "description": "Kicks off an async Cloud Run job. Poll GET on this same path, then re-fetch signed-video for the updated URL.",
+        "description": "Kicks off an async Cloud Run job.",
+        "x-mint": {
+          "content": "<Note>\nA `200` here means the job *started*, not that it's done. Poll `GET` on this same path until `status` is `completed` or `failed`, then re-fetch `signed-video` for the updated URL.\n</Note>"
+        },
         "tags": [
           "Music"
         ],
