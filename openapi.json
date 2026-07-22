@@ -1349,6 +1349,7 @@
         ]
       },
       "Model": {
+        "example": "anthropic",
         "type": "string",
         "enum": [
           "openai",
@@ -1653,6 +1654,7 @@
         "type": "object",
         "properties": {
           "status": {
+            "example": "completed",
             "type": "string",
             "enum": [
               "queued",
@@ -1868,6 +1870,7 @@
         "additionalProperties": false
       },
       "EvalPipelineStatus": {
+        "example": "COMPLETED",
         "type": "string",
         "enum": [
           "PENDING",
@@ -1877,6 +1880,7 @@
         ]
       },
       "EvalRunStatus": {
+        "example": "PASS",
         "type": "string",
         "enum": [
           "PENDING",
@@ -2005,6 +2009,7 @@
         "additionalProperties": false
       },
       "EvalKind": {
+        "example": "VISUAL_RUBRIC_JSON",
         "type": "string",
         "enum": [
           "USER_INPUT_SECURITY",
@@ -2074,6 +2079,7 @@
         "additionalProperties": false
       },
       "EvalIssueSeverity": {
+        "example": "MEDIUM",
         "type": "string",
         "enum": [
           "LOW",
