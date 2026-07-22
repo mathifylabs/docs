@@ -670,6 +670,9 @@
         "operationId": "getSignedVideo",
         "summary": "Get a fresh signed video URL",
         "description": "Refreshes the stored signed URL if it has expired (24h TTL).",
+        "x-mint": {
+          "content": "<Note>\nJust want a URL to drop into a `<video>` tag or redirect through, without parsing JSON? `GET https://mathify.dev/api/video/{fragmentId}` 307-redirects straight to the signed video. It's unauthenticated (no API key needed) and short-lived (15 min TTL), unlike this endpoint's 24h signed URL.\n</Note>"
+        },
         "tags": [
           "Fragments"
         ],
