@@ -9,8 +9,11 @@ description: Generate your first animation in three requests.
 curl -X POST https://mathify.dev/api/v1/projects \
   -H "x-api-key: $MATHIFY_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{}'
+  -d '{ "name": "pythagorean-theorem" }'
 ```
+
+The body is optional — omit it (or drop `name`) and a random project name is
+generated for you instead.
 
 Returns:
 
