@@ -1340,6 +1340,7 @@
             "maxLength": 100000
           },
           "model": {
+            "description": "Optional preference for the model or provider family used by the main generation agent — the one doing the primary reasoning and code generation. Other steps in the pipeline (e.g. scene planning, visual validation) may already use a different model regardless of this setting. Even for the main agent, it's a preference rather than a guarantee: depending on the difficulty or type of your prompt, Mathify may route generation to a different model or provider family if we judge it a better fit for that specific task. Omit this field to let Mathify choose automatically.",
             "$ref": "#/components/schemas/Model"
           },
           "forceWatermark": {
