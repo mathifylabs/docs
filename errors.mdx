@@ -28,6 +28,6 @@ Generation and music application are asynchronous. Poll the relevant `GET`
 endpoint rather than expecting a synchronous result:
 
 - After `POST /projects/:id/messages` → poll `GET /fragments/:fragmentId` until
-  `animationUrl` is non-empty.
+  `animationUrl` is non-null.
 - After `POST /fragments/:fragmentId/music` → poll
   `GET /fragments/:fragmentId/music` until `status` is `completed` or `failed`.

@@ -448,7 +448,7 @@
       "post": {
         "operationId": "createMessage",
         "summary": "Send a message and start a generation",
-        "description": "Starts an async generation job. Poll GET /fragments/{fragmentId} until animationUrl is non-empty.",
+        "description": "Starts an async generation job. Poll GET /fragments/{fragmentId} until animationUrl is non-null.",
         "tags": [
           "Projects",
           "Messages"

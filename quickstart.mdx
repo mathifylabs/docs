@@ -43,9 +43,9 @@ curl https://mathify.dev/api/v1/fragments/frag_123 \
   -H "x-api-key: $MATHIFY_API_KEY"
 ```
 
-Poll until `fragment.animationUrl` is non-empty. That URL is a signed link to
-the rendered video, refreshed automatically on each request if the previous
-signature expired.
+Poll until `fragment.animationUrl` is non-null (it's `null` while generating).
+Once set, that URL is a signed link to the rendered video, refreshed
+automatically on each request if the previous signature expired.
 
 See the [API Reference](/api-reference) for every endpoint, or
 [N8N examples](/n8n-examples) for automating this flow end-to-end.

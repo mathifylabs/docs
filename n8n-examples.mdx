@@ -15,7 +15,7 @@ POST /api/v1/projects/:id/messages
   → { fragmentId, status: "generating" }
 
 loop: GET /api/v1/fragments/:fragmentId
-  until animationUrl !== ""
+  until animationUrl !== null
 
 GET /api/v1/fragments/:fragmentId/signed-video
   → { signedUrl }
