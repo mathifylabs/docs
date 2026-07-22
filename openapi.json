@@ -69,15 +69,6 @@
               "maximum": 9007199254740991
             },
             "description": "Max results to return (default 50, max 200)."
-          },
-          {
-            "in": "query",
-            "name": "userId",
-            "schema": {
-              "description": "Internal-secret mode only — required. Ignored (and derived from the key) in user-key mode.",
-              "type": "string"
-            },
-            "description": "Internal-secret mode only — required. Ignored (and derived from the key) in user-key mode."
           }
         ],
         "responses": {
@@ -124,7 +115,7 @@
             }
           },
           "403": {
-            "description": "A user API key (not the internal secret) is required, or the account lacks an active subscription",
+            "description": "A valid API key is required, or the account has no active Mathify subscription",
             "content": {
               "application/json": {
                 "schema": {
@@ -210,7 +201,7 @@
             }
           },
           "403": {
-            "description": "A user API key (not the internal secret) is required, or the account lacks an active subscription",
+            "description": "A valid API key is required, or the account has no active Mathify subscription",
             "content": {
               "application/json": {
                 "schema": {
@@ -313,7 +304,7 @@
             }
           },
           "403": {
-            "description": "A user API key (not the internal secret) is required, or the account lacks an active subscription",
+            "description": "A valid API key is required, or the account has no active Mathify subscription",
             "content": {
               "application/json": {
                 "schema": {
@@ -431,7 +422,7 @@
             }
           },
           "403": {
-            "description": "A user API key (not the internal secret) is required, or the account lacks an active subscription",
+            "description": "A valid API key is required, or the account has no active Mathify subscription",
             "content": {
               "application/json": {
                 "schema": {
@@ -521,7 +512,7 @@
             }
           },
           "403": {
-            "description": "A user API key (not the internal secret) is required, or the account lacks an active subscription",
+            "description": "A valid API key is required, or the account has no active Mathify subscription",
             "content": {
               "application/json": {
                 "schema": {
@@ -649,7 +640,7 @@
             }
           },
           "403": {
-            "description": "A user API key (not the internal secret) is required, or the account lacks an active subscription",
+            "description": "A valid API key is required, or the account has no active Mathify subscription",
             "content": {
               "application/json": {
                 "schema": {
@@ -729,7 +720,7 @@
             }
           },
           "403": {
-            "description": "A user API key (not the internal secret) is required, or the account lacks an active subscription",
+            "description": "A valid API key is required, or the account has no active Mathify subscription",
             "content": {
               "application/json": {
                 "schema": {
@@ -755,7 +746,6 @@
       "get": {
         "operationId": "getMusicJobStatus",
         "summary": "Get the latest music job status for a fragment",
-        "description": "Requires a user API key (the internal secret is not accepted here).",
         "tags": [
           "Music"
         ],
@@ -809,7 +799,7 @@
             }
           },
           "403": {
-            "description": "A user API key (not the internal secret) is required, or the account lacks an active subscription",
+            "description": "A valid API key is required, or the account has no active Mathify subscription",
             "content": {
               "application/json": {
                 "schema": {
@@ -833,7 +823,7 @@
       "post": {
         "operationId": "applyMusic",
         "summary": "Apply a music track to a rendered fragment",
-        "description": "Kicks off an async Cloud Run job. Poll GET on this same path, then re-fetch signed-video for the updated URL. Requires a user API key (the internal secret is not accepted here).",
+        "description": "Kicks off an async Cloud Run job. Poll GET on this same path, then re-fetch signed-video for the updated URL.",
         "tags": [
           "Music"
         ],
@@ -896,7 +886,7 @@
             }
           },
           "403": {
-            "description": "A user API key (not the internal secret) is required, or the account lacks an active subscription",
+            "description": "A valid API key is required, or the account has no active Mathify subscription",
             "content": {
               "application/json": {
                 "schema": {
@@ -952,7 +942,6 @@
       "get": {
         "operationId": "listMusicTracks",
         "summary": "List the active music catalog",
-        "description": "Requires a user API key (the internal secret is not accepted here).",
         "tags": [
           "Music"
         ],
@@ -1008,7 +997,7 @@
             }
           },
           "403": {
-            "description": "A user API key (not the internal secret) is required, or the account lacks an active subscription",
+            "description": "A valid API key is required, or the account has no active Mathify subscription",
             "content": {
               "application/json": {
                 "schema": {
@@ -1034,7 +1023,6 @@
       "get": {
         "operationId": "getFragmentEvals",
         "summary": "Get the latest eval pipeline run for a fragment",
-        "description": "Requires a user API key (the internal secret is not accepted here).",
         "tags": [
           "Evals"
         ],
@@ -1097,7 +1085,7 @@
             }
           },
           "403": {
-            "description": "A user API key (not the internal secret) is required, or the account lacks an active subscription",
+            "description": "A valid API key is required, or the account has no active Mathify subscription",
             "content": {
               "application/json": {
                 "schema": {
@@ -1123,7 +1111,6 @@
       "get": {
         "operationId": "getEvalPipelineRun",
         "summary": "Get a single eval pipeline run",
-        "description": "Requires a user API key (the internal secret is not accepted here).",
         "tags": [
           "Evals"
         ],
@@ -1201,7 +1188,7 @@
             }
           },
           "403": {
-            "description": "A user API key (not the internal secret) is required, or the account lacks an active subscription",
+            "description": "A valid API key is required, or the account has no active Mathify subscription",
             "content": {
               "application/json": {
                 "schema": {
@@ -1227,7 +1214,7 @@
       "get": {
         "operationId": "getEvalPipelineRunIssues",
         "summary": "Get all issues for an eval pipeline run",
-        "description": "Flat list of issues across all eval runs in the pipeline. Requires a user API key (the internal secret is not accepted here).",
+        "description": "Flat list of issues across all eval runs in the pipeline.",
         "tags": [
           "Evals"
         ],
@@ -1297,7 +1284,7 @@
             }
           },
           "403": {
-            "description": "A user API key (not the internal secret) is required, or the account lacks an active subscription",
+            "description": "A valid API key is required, or the account has no active Mathify subscription",
             "content": {
               "application/json": {
                 "schema": {
@@ -2167,7 +2154,7 @@
         "type": "apiKey",
         "in": "header",
         "name": "x-api-key",
-        "description": "A user API key (`mk_live_<64 hex chars>`, generated at /settings/api-keys) or, on legacy endpoints only, the internal webhook secret."
+        "description": "Your Mathify API key (`mk_live_<64 hex chars>`), generated at /settings/api-keys."
       },
       "bearerAuth": {
         "type": "http",

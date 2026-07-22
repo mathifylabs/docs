@@ -15,7 +15,7 @@ Every error response is a JSON object with a single `error` string field:
 |--------|---------|
 | `400` | Malformed JSON, or a request body/param that failed validation (e.g. missing `content`). |
 | `401` | Missing or invalid API key. |
-| `403` | A user API key is required but an internal secret (or nothing) was supplied, or the account has no active Mathify subscription. |
+| `403` | The account has no active Mathify subscription. |
 | `404` | The resource doesn't exist, or doesn't belong to the authenticated key owner. Not-found and not-yours are intentionally indistinguishable. |
 | `409` | A conflicting job is already in progress (e.g. applying music while a music job is already running for that fragment). |
 | `422` | The request is well-formed but the target isn't in a state that supports the operation (e.g. applying music to a fragment with no rendered animation yet). |
