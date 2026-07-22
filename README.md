@@ -1,16 +1,8 @@
-# Mintlify Starter Kit
+# Mathify API Docs
 
-Use the starter kit to get your docs deployed and ready to customize.
+Documentation for the [Mathify](https://mathify.dev) API, built on [Mintlify](https://mintlify.com).
 
-Click the green **Use this template** button at the top of this repo to copy the Mintlify starter kit. The starter kit contains examples with
-
-- Guide pages
-- Navigation
-- Customizations
-- API reference pages
-- Use of popular components
-
-**[Follow the full quickstart guide](https://starter.mintlify.com/quickstart)**
+Covers authentication, the core generation flow (projects, messages, fragments), quality evals, background music, and N8N automation examples. The API reference under the **API Reference** tab is generated from `openapi.json`.
 
 ## AI-assisted writing
 
