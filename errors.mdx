@@ -1,0 +1,33 @@
+---
+title: Errors
+description: Status codes and error response shape.
+---
+
+Every error response is a JSON object with a single `error` string field:
+
+```json
+{ "error": "Project not found" }
+```
+
+## Status codes
+
+| Status | Meaning |
+|--------|---------|
+| `400` | Malformed JSON, or a request body/param that failed validation (e.g. missing `content`). |
+| `401` | Missing or invalid API key. |
+| `403` | A user API key is required but an internal secret (or nothing) was supplied, or the account has no active Mathify subscription. |
+| `404` | The resource doesn't exist, or doesn't belong to the authenticated key owner. Not-found and not-yours are intentionally indistinguishable. |
+| `409` | A conflicting job is already in progress (e.g. applying music while a music job is already running for that fragment). |
+| `422` | The request is well-formed but the target isn't in a state that supports the operation (e.g. applying music to a fragment with no rendered animation yet). |
+| `502` | An upstream service (the render backend) failed or was unreachable. Safe to retry. |
+| `503` | Generation is temporarily in maintenance mode. |
+
+## Polling patterns
+
+Generation and music application are asynchronous. Poll the relevant `GET`
+endpoint rather than expecting a synchronous result:
+
+- After `POST /projects/:id/messages` → poll `GET /fragments/:fragmentId` until
+  `animationUrl` is non-empty.
+- After `POST /fragments/:fragmentId/music` → poll
+  `GET /fragments/:fragmentId/music` until `status` is `completed` or `failed`.

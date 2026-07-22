@@ -1,47 +1,48 @@
 ---
-title: "Quickstart"
-description: "Begin with a guide on the fastest path to a successful outcome"
+title: Quickstart
+description: Generate your first animation in three requests.
 ---
 
-Describe how someone begins using your product. What is the first thing they need to do? Are there any prerequisites?
+## 1. Create a project
 
-A quickstart should take someone from zero to using your product. They'll get a quick win and a sense of what they can accomplish.
+```bash
+curl -X POST https://mathify.dev/api/v1/projects \
+  -H "x-api-key: $MATHIFY_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
 
-## Prerequisites
+Returns:
 
-Before you begin, you must have:
+```json
+{ "project": { "id": "proj_123", "name": "...", "userId": "...", "createdAt": "...", "updatedAt": "..." } }
+```
 
-- Requirement one (for example, Node.js 18+, a free account, an API key)
-- Requirement two (for example, a compatible device, a compatible browser, a compatible operating system)
+## 2. Send a message to start generation
 
-## Get started
+```bash
+curl -X POST https://mathify.dev/api/v1/projects/proj_123/messages \
+  -H "x-api-key: $MATHIFY_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "content": "Animate the Pythagorean theorem" }'
+```
 
-<Steps>
-  <Step title="Install">
-    Describe how to install your product or sign up.
+Returns `202 Accepted`:
 
-    ```bash
-    npm install your-package
-    ```
-  </Step>
-  <Step title="Configure">
-    Describe any setup or configuration needed before first use.
+```json
+{ "messageId": "msg_123", "fragmentId": "frag_123", "status": "generating", "totalSteps": 12 }
+```
 
-    ```bash
-    your-cli init
-    ```
-  </Step>
-  <Step title="Run it">
-    Show the first thing a user does to see it working.
+## 3. Poll for the result
 
-    ```bash
-    your-cli start
-    ```
-  </Step>
-</Steps>
+```bash
+curl https://mathify.dev/api/v1/fragments/frag_123 \
+  -H "x-api-key: $MATHIFY_API_KEY"
+```
 
-<Tip>
-  Give people a way to get help. This could be a link to a support page, a chat with a customer support agent, or a forum for your product.
+Poll until `fragment.animationUrl` is non-empty. That URL is a signed link to
+the rendered video, refreshed automatically on each request if the previous
+signature expired.
 
-  Example: Need help? Reach out to us at [support@yourcompany.com](mailto:support@yourcompany.com).
-</Tip>
+See the [API Reference](/api-reference) for every endpoint, or
+[N8N examples](/n8n-examples) for automating this flow end-to-end.

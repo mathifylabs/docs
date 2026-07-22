@@ -1,0 +1,31 @@
+---
+title: Introduction
+description: The Mathify API generates math animations from natural language prompts.
+---
+
+Mathify's API lets you create AI-generated math animations programmatically:
+send a prompt, get back a rendered video. It's the same generation pipeline
+that powers the Mathify web app.
+
+## What you can do
+
+- Create a project and kick off a generation from a text prompt
+- Poll for the rendered video and get a signed, downloadable URL
+- Apply background music from Mathify's music catalog
+- Read automated quality evaluation results (visual correctness, design,
+  engagement rubric) for any fragment
+
+## Base URL
+
+```
+https://mathify.dev/api/v1
+```
+
+## Before you start
+
+- Every write endpoint (creating a project, sending a message, applying music)
+  requires an active Mathify subscription.
+- All new endpoints require a user API key. See [Authentication](/authentication)
+  for how to generate one.
+
+Head to [Quickstart](/quickstart) to generate your first animation.

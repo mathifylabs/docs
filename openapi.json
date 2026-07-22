@@ -1,0 +1,2179 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Mathify API",
+    "version": "1.0.0",
+    "description": "Public REST API for generating and retrieving Mathify math animations. See app/api/v1/README.md in the source repo for the underlying implementation."
+  },
+  "servers": [
+    {
+      "url": "https://mathify.dev/api/v1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Projects"
+    },
+    {
+      "name": "Messages"
+    },
+    {
+      "name": "Fragments"
+    },
+    {
+      "name": "Music"
+    },
+    {
+      "name": "Evals"
+    }
+  ],
+  "paths": {
+    "/projects": {
+      "get": {
+        "operationId": "listProjects",
+        "summary": "List projects",
+        "tags": [
+          "Projects"
+        ],
+        "security": [
+          {
+            "apiKeyHeader": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "includeFragments",
+            "schema": {
+              "description": "Embed the project's fragments in the response.",
+              "type": "string",
+              "enum": [
+                "0",
+                "1",
+                "true",
+                "false"
+              ]
+            },
+            "description": "Embed the project's fragments in the response."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "description": "Max results to return (default 50, max 200).",
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "description": "Max results to return (default 50, max 200)."
+          },
+          {
+            "in": "query",
+            "name": "userId",
+            "schema": {
+              "description": "Internal-secret mode only — required. Ignored (and derived from the key) in user-key mode.",
+              "type": "string"
+            },
+            "description": "Internal-secret mode only — required. Ignored (and derived from the key) in user-key mode."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Projects for the authenticated user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "projects": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Project"
+                      }
+                    }
+                  },
+                  "required": [
+                    "projects"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A user API key (not the internal secret) is required, or the account lacks an active subscription",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createProject",
+        "summary": "Create a project",
+        "description": "Requires a user API key and an active Mathify subscription.",
+        "tags": [
+          "Projects"
+        ],
+        "security": [
+          {
+            "apiKeyHeader": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Project created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "project": {
+                      "$ref": "#/components/schemas/CreatedProject"
+                    }
+                  },
+                  "required": [
+                    "project"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A user API key (not the internal secret) is required, or the account lacks an active subscription",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{projectId}": {
+      "get": {
+        "operationId": "getProject",
+        "summary": "Get a project",
+        "tags": [
+          "Projects"
+        ],
+        "security": [
+          {
+            "apiKeyHeader": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "includeFragments",
+            "schema": {
+              "description": "Embed the project's fragments in the response.",
+              "type": "string",
+              "enum": [
+                "0",
+                "1",
+                "true",
+                "false"
+              ]
+            },
+            "description": "Embed the project's fragments in the response."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "project": {
+                      "$ref": "#/components/schemas/Project"
+                    }
+                  },
+                  "required": [
+                    "project"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A user API key (not the internal secret) is required, or the account lacks an active subscription",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/fragments": {
+      "get": {
+        "operationId": "listProjectFragments",
+        "summary": "List a project's fragments",
+        "tags": [
+          "Projects",
+          "Fragments"
+        ],
+        "security": [
+          {
+            "apiKeyHeader": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "includeFiles",
+            "schema": {
+              "description": "Embed the fragment's generated source files.",
+              "type": "string",
+              "enum": [
+                "0",
+                "1",
+                "true",
+                "false"
+              ]
+            },
+            "description": "Embed the fragment's generated source files."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "description": "Max results to return (default 50, max 200).",
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "description": "Max results to return (default 50, max 200)."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fragments",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "fragments": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Fragment"
+                      }
+                    }
+                  },
+                  "required": [
+                    "fragments"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A user API key (not the internal secret) is required, or the account lacks an active subscription",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/messages": {
+      "post": {
+        "operationId": "createMessage",
+        "summary": "Send a message and start a generation",
+        "description": "Starts an async generation job. Poll GET /fragments/{fragmentId} until animationUrl is non-empty.",
+        "tags": [
+          "Projects",
+          "Messages"
+        ],
+        "security": [
+          {
+            "apiKeyHeader": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMessageBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Generation started",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateMessageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A user API key (not the internal secret) is required, or the account lacks an active subscription",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Generation is in maintenance mode",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fragments/{fragmentId}": {
+      "get": {
+        "operationId": "getFragment",
+        "summary": "Get a fragment",
+        "tags": [
+          "Fragments"
+        ],
+        "security": [
+          {
+            "apiKeyHeader": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fragmentId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "includeFiles",
+            "schema": {
+              "description": "Embed the fragment's generated source files.",
+              "type": "string",
+              "enum": [
+                "0",
+                "1",
+                "true",
+                "false"
+              ]
+            },
+            "description": "Embed the fragment's generated source files."
+          },
+          {
+            "in": "query",
+            "name": "includeProject",
+            "schema": {
+              "description": "Embed the parent project.",
+              "type": "string",
+              "enum": [
+                "0",
+                "1",
+                "true",
+                "false"
+              ]
+            },
+            "description": "Embed the parent project."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fragment",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "fragment": {
+                      "$ref": "#/components/schemas/Fragment"
+                    }
+                  },
+                  "required": [
+                    "fragment"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A user API key (not the internal secret) is required, or the account lacks an active subscription",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fragments/{fragmentId}/signed-video": {
+      "get": {
+        "operationId": "getSignedVideo",
+        "summary": "Get a fresh signed video URL",
+        "description": "Refreshes the stored signed URL if it has expired (24h TTL).",
+        "tags": [
+          "Fragments"
+        ],
+        "security": [
+          {
+            "apiKeyHeader": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fragmentId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Signed URL",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignedVideoResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A user API key (not the internal secret) is required, or the account lacks an active subscription",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fragments/{fragmentId}/music": {
+      "get": {
+        "operationId": "getMusicJobStatus",
+        "summary": "Get the latest music job status for a fragment",
+        "description": "Requires a user API key (the internal secret is not accepted here).",
+        "tags": [
+          "Music"
+        ],
+        "security": [
+          {
+            "apiKeyHeader": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fragmentId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Music job status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MusicJobStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A user API key (not the internal secret) is required, or the account lacks an active subscription",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "applyMusic",
+        "summary": "Apply a music track to a rendered fragment",
+        "description": "Kicks off an async Cloud Run job. Poll GET on this same path, then re-fetch signed-video for the updated URL. Requires a user API key (the internal secret is not accepted here).",
+        "tags": [
+          "Music"
+        ],
+        "security": [
+          {
+            "apiKeyHeader": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fragmentId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplyMusicBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Music job started",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplyMusicResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A user API key (not the internal secret) is required, or the account lacks an active subscription",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "A music job is already running for this fragment",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Fragment/track not ready or not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Upstream render backend error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/music/tracks": {
+      "get": {
+        "operationId": "listMusicTracks",
+        "summary": "List the active music catalog",
+        "description": "Requires a user API key (the internal secret is not accepted here).",
+        "tags": [
+          "Music"
+        ],
+        "security": [
+          {
+            "apiKeyHeader": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tracks",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "tracks": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/MusicTrack"
+                      }
+                    }
+                  },
+                  "required": [
+                    "tracks"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A user API key (not the internal secret) is required, or the account lacks an active subscription",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fragments/{fragmentId}/evals": {
+      "get": {
+        "operationId": "getFragmentEvals",
+        "summary": "Get the latest eval pipeline run for a fragment",
+        "description": "Requires a user API key (the internal secret is not accepted here).",
+        "tags": [
+          "Evals"
+        ],
+        "security": [
+          {
+            "apiKeyHeader": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fragmentId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Eval pipeline run",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "evalPipelineRun": {
+                      "$ref": "#/components/schemas/EvalPipelineRun"
+                    }
+                  },
+                  "required": [
+                    "evalPipelineRun"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A user API key (not the internal secret) is required, or the account lacks an active subscription",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/evals/pipeline-runs/{pipelineRunId}": {
+      "get": {
+        "operationId": "getEvalPipelineRun",
+        "summary": "Get a single eval pipeline run",
+        "description": "Requires a user API key (the internal secret is not accepted here).",
+        "tags": [
+          "Evals"
+        ],
+        "security": [
+          {
+            "apiKeyHeader": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "pipelineRunId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "includeIssues",
+            "schema": {
+              "description": "Embed the full issue list on each eval run.",
+              "type": "string",
+              "enum": [
+                "0",
+                "1",
+                "true",
+                "false"
+              ]
+            },
+            "description": "Embed the full issue list on each eval run."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Eval pipeline run",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "evalPipelineRun": {
+                      "$ref": "#/components/schemas/EvalPipelineRun"
+                    }
+                  },
+                  "required": [
+                    "evalPipelineRun"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A user API key (not the internal secret) is required, or the account lacks an active subscription",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/evals/pipeline-runs/{pipelineRunId}/issues": {
+      "get": {
+        "operationId": "getEvalPipelineRunIssues",
+        "summary": "Get all issues for an eval pipeline run",
+        "description": "Flat list of issues across all eval runs in the pipeline. Requires a user API key (the internal secret is not accepted here).",
+        "tags": [
+          "Evals"
+        ],
+        "security": [
+          {
+            "apiKeyHeader": []
+          },
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "pipelineRunId",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Issues",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pipelineRunId": {
+                      "type": "string"
+                    },
+                    "issues": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/FlatEvalIssue"
+                      }
+                    }
+                  },
+                  "required": [
+                    "pipelineRunId",
+                    "issues"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A user API key (not the internal secret) is required, or the account lacks an active subscription",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateProjectBody": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "Defaults to a random slug, or an AI-generated title derived from `prompt`.",
+            "type": "string"
+          },
+          "prompt": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateMessageBody": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "example": "Animate the Pythagorean theorem",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100000
+          },
+          "model": {
+            "$ref": "#/components/schemas/Model"
+          },
+          "forceWatermark": {
+            "description": "Opt into a watermarked render even if the caller's account has the no-watermark benefit.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "content"
+        ]
+      },
+      "Model": {
+        "type": "string",
+        "enum": [
+          "openai",
+          "anthropic",
+          "qwen",
+          "gemini",
+          "grok",
+          "gptoss"
+        ]
+      },
+      "ApplyMusicBody": {
+        "description": "Provide either trackSlug or random: true.",
+        "type": "object",
+        "properties": {
+          "trackSlug": {
+            "type": "string",
+            "minLength": 1
+          },
+          "random": {
+            "type": "boolean"
+          },
+          "volume": {
+            "default": 0.8,
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "loopAudio": {
+            "default": true,
+            "type": "boolean"
+          }
+        }
+      },
+      "Project": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "featured": {
+            "type": "boolean"
+          },
+          "remixedFragmentId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "remixDescendantCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+          },
+          "fragmentCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "fragments": {
+            "description": "Only present when includeFragments=1 was requested.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Fragment"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "userId",
+          "featured",
+          "remixedFragmentId",
+          "remixDescendantCount",
+          "createdAt",
+          "updatedAt",
+          "fragmentCount"
+        ],
+        "additionalProperties": false
+      },
+      "Fragment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "messageId": {
+            "type": "string"
+          },
+          "projectId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "description": "The user message content that produced this fragment.",
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sandboxUrl": {
+            "type": "string"
+          },
+          "files": {
+            "description": "Only present when includeFiles=1 was requested.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "animationUrl": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "thumbnailUrl": {
+            "type": "string"
+          },
+          "vtpUrl": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "vtkManifestUrl": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+          },
+          "messageCreatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+          },
+          "public": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "messageId",
+          "projectId",
+          "title",
+          "description",
+          "sandboxUrl",
+          "animationUrl",
+          "thumbnailUrl",
+          "vtpUrl",
+          "vtkManifestUrl",
+          "createdAt",
+          "updatedAt",
+          "messageCreatedAt",
+          "public"
+        ],
+        "additionalProperties": false
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "example": "Project not found",
+            "type": "string"
+          }
+        },
+        "required": [
+          "error"
+        ],
+        "additionalProperties": false
+      },
+      "CreatedProject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "userId",
+          "createdAt",
+          "updatedAt"
+        ],
+        "additionalProperties": false
+      },
+      "CreateMessageResponse": {
+        "type": "object",
+        "properties": {
+          "messageId": {
+            "type": "string"
+          },
+          "fragmentId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "const": "generating"
+          },
+          "totalSteps": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "messageId",
+          "fragmentId",
+          "status",
+          "totalSteps"
+        ],
+        "additionalProperties": false
+      },
+      "SignedVideoResponse": {
+        "type": "object",
+        "properties": {
+          "fragmentId": {
+            "type": "string"
+          },
+          "signedUrl": {
+            "type": "string"
+          },
+          "refreshed": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "fragmentId",
+          "signedUrl",
+          "refreshed"
+        ],
+        "additionalProperties": false
+      },
+      "MusicJobStatus": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "queued",
+              "running",
+              "completed",
+              "failed"
+            ]
+          },
+          "trackSlug": {
+            "type": "string"
+          },
+          "error": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "trackSlug"
+        ],
+        "additionalProperties": false
+      },
+      "ApplyMusicResponse": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "const": true
+          },
+          "trackSlug": {
+            "type": "string"
+          },
+          "track": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "artist": {
+                "type": "string"
+              },
+              "mood": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "title",
+              "artist",
+              "mood"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "ok",
+          "trackSlug",
+          "track"
+        ],
+        "additionalProperties": false
+      },
+      "MusicTrack": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "artist": {
+            "type": "string"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "mood": {
+            "type": "string"
+          },
+          "durationSeconds": {
+            "type": "number"
+          },
+          "licenseLabel": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "title",
+          "artist",
+          "description",
+          "mood",
+          "durationSeconds",
+          "licenseLabel"
+        ],
+        "additionalProperties": false
+      },
+      "EvalPipelineRun": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "fragmentId": {
+            "type": "string"
+          },
+          "projectId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "attemptNumber": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "status": {
+            "$ref": "#/components/schemas/EvalPipelineStatus"
+          },
+          "overallStatus": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EvalRunStatus"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "renderJobId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "executionName": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+          },
+          "completedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evalRuns": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EvalRun"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "fragmentId",
+          "projectId",
+          "userId",
+          "attemptNumber",
+          "status",
+          "overallStatus",
+          "summary",
+          "createdAt",
+          "startedAt",
+          "completedAt",
+          "evalRuns"
+        ],
+        "additionalProperties": false
+      },
+      "EvalPipelineStatus": {
+        "type": "string",
+        "enum": [
+          "PENDING",
+          "RUNNING",
+          "COMPLETED",
+          "ERROR"
+        ]
+      },
+      "EvalRunStatus": {
+        "type": "string",
+        "enum": [
+          "PENDING",
+          "RUNNING",
+          "PASS",
+          "FAIL",
+          "ERROR",
+          "SKIPPED"
+        ]
+      },
+      "EvalRun": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/EvalKind"
+          },
+          "status": {
+            "$ref": "#/components/schemas/EvalRunStatus"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "maxScore": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "issueCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "highSeverityCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "provider": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+          },
+          "completedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "issues": {
+            "description": "Only present when includeIssues=1 was requested.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EvalIssue"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "status",
+          "score",
+          "maxScore",
+          "issueCount",
+          "highSeverityCount",
+          "summary",
+          "provider",
+          "model",
+          "createdAt",
+          "completedAt"
+        ],
+        "additionalProperties": false
+      },
+      "EvalKind": {
+        "type": "string",
+        "enum": [
+          "USER_INPUT_SECURITY",
+          "VISUAL_VALIDATION_JSON",
+          "DESIGN_VALIDATION_JSON",
+          "VISUAL_RUBRIC_JSON",
+          "ENGAGEMENT_RUBRIC_JSON"
+        ]
+      },
+      "EvalIssue": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "severity": {
+            "$ref": "#/components/schemas/EvalIssueSeverity"
+          },
+          "category": {
+            "type": "string"
+          },
+          "frameIndex": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "frameHint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": {
+            "type": "string"
+          },
+          "suggestedFix": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "severity",
+          "category",
+          "frameIndex",
+          "frameHint",
+          "description",
+          "suggestedFix"
+        ],
+        "additionalProperties": false
+      },
+      "EvalIssueSeverity": {
+        "type": "string",
+        "enum": [
+          "LOW",
+          "MEDIUM",
+          "HIGH"
+        ]
+      },
+      "FlatEvalIssue": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "severity": {
+            "$ref": "#/components/schemas/EvalIssueSeverity"
+          },
+          "category": {
+            "type": "string"
+          },
+          "frameIndex": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "frameHint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": {
+            "type": "string"
+          },
+          "suggestedFix": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evalRunId": {
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/EvalKind"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+          }
+        },
+        "required": [
+          "id",
+          "severity",
+          "category",
+          "frameIndex",
+          "frameHint",
+          "description",
+          "suggestedFix",
+          "evalRunId",
+          "kind",
+          "createdAt"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "apiKeyHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key",
+        "description": "A user API key (`mk_live_<64 hex chars>`, generated at /settings/api-keys) or, on legacy endpoints only, the internal webhook secret."
+      },
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Same token as apiKeyHeader, passed as `Authorization: Bearer <token>`."
+      }
+    }
+  }
+}

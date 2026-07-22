@@ -1,0 +1,44 @@
+---
+title: Authentication
+description: How to authenticate requests to the Mathify API.
+---
+
+## User API keys
+
+Generate a key at [mathify.dev/settings/api-keys](https://mathify.dev/settings/api-keys).
+Keys look like `mk_live_<64 hex chars>` and require an active Mathify subscription.
+
+Pass the key via either header:
+
+```
+Authorization: Bearer mk_live_...
+```
+
+or
+
+```
+x-api-key: mk_live_...
+```
+
+Required on all endpoints except the legacy read-only endpoints below.
+
+## Legacy internal secret
+
+A small number of original GET endpoints (`/projects`, `/fragments/:id`)
+also accept an internal automation secret, passed the same way. This mode is
+kept for existing automations only — new integrations should use a user API
+key instead, since it's the only mode that works for write endpoints and
+scopes reads to the key owner automatically.
+
+## Endpoint matrix
+
+| Endpoint | Internal secret | User API key |
+|----------|:---:|:---:|
+| `GET /projects`, `GET /projects/:id`, `GET /projects/:id/fragments` | ✓ | ✓ |
+| `GET /fragments/:id`, `GET /fragments/:id/signed-video` | ✓ | ✓ |
+| `GET /fragments/:id/evals`, `GET /evals/pipeline-runs/*` | — | ✓ |
+| `GET/POST /fragments/:id/music`, `GET /music/tracks` | — | ✓ |
+| `POST /projects`, `POST /projects/:id/messages` | — | ✓ |
+
+In user-key mode, reads are automatically scoped to the key owner — you don't
+need to pass a `userId` param.

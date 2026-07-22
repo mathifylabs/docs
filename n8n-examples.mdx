@@ -1,0 +1,50 @@
+---
+title: N8N examples
+description: Automating Mathify generation from an N8N workflow.
+---
+
+These are the two flows Mathify's own N8N workflows use.
+
+## Basic — generate and retrieve video
+
+```
+POST /api/v1/projects
+  → { project: { id } }
+
+POST /api/v1/projects/:id/messages
+  → { fragmentId, status: "generating" }
+
+loop: GET /api/v1/fragments/:fragmentId
+  until animationUrl !== ""
+
+GET /api/v1/fragments/:fragmentId/signed-video
+  → { signedUrl }
+```
+
+## With evals — generate, retrieve video, log quality scores
+
+```
+... (same generation flow above)
+
+loop: GET /api/v1/fragments/:fragmentId/evals
+  until evalPipelineRun.status === "COMPLETED"
+
+→ write rubric score, per-kind status to a sheet
+
+→ optionally: GET /api/v1/evals/pipeline-runs/:pipelineRunId/issues
+    → write individual issues to a separate sheet tab
+```
+
+## Adding background music
+
+```
+POST /api/v1/fragments/:fragmentId/music
+  { "random": true }
+  → { ok: true, trackSlug, track }
+
+loop: GET /api/v1/fragments/:fragmentId/music
+  until status === "completed" or "failed"
+
+GET /api/v1/fragments/:fragmentId/signed-video
+  → refreshed URL with audio
+```
