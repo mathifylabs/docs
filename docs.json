@@ -3,9 +3,9 @@
   "name": "Mathify API",
   "theme": "mint",
   "colors": {
-    "primary": "#6D28D9",
-    "light": "#A78BFA",
-    "dark": "#4C1D95"
+    "primary": "#00B4B3",
+    "light": "#59CECE",
+    "dark": "#005A59"
   },
   "favicon": "/favicon.ico",
   "navigation": {
