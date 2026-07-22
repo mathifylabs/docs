@@ -35,5 +35,10 @@
         "href": "https://mathify.dev/settings/api-keys"
       }
     ]
+  },
+  "seo": {
+    "metatags": {
+      "canonical": "https://mathify.dev"
+    }
   }
 }
