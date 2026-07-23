@@ -115,7 +115,7 @@
             }
           },
           "403": {
-            "description": "A valid API key is required, or the account has no active Mathify subscription",
+            "description": "A valid API key is required, or the account has no credits balance (see https://mathify.dev/pricing)",
             "content": {
               "application/json": {
                 "schema": {
@@ -139,7 +139,7 @@
       "post": {
         "operationId": "createProject",
         "summary": "Create a project",
-        "description": "Requires a user API key and an active Mathify subscription.",
+        "description": "Requires a user API key and a positive credits balance (or a usage-based subscription). See https://mathify.dev/pricing.",
         "tags": [
           "Projects"
         ],
@@ -201,7 +201,7 @@
             }
           },
           "403": {
-            "description": "A valid API key is required, or the account has no active Mathify subscription",
+            "description": "A valid API key is required, or the account has no credits balance (see https://mathify.dev/pricing)",
             "content": {
               "application/json": {
                 "schema": {
@@ -304,7 +304,7 @@
             }
           },
           "403": {
-            "description": "A valid API key is required, or the account has no active Mathify subscription",
+            "description": "A valid API key is required, or the account has no credits balance (see https://mathify.dev/pricing)",
             "content": {
               "application/json": {
                 "schema": {
@@ -422,7 +422,7 @@
             }
           },
           "403": {
-            "description": "A valid API key is required, or the account has no active Mathify subscription",
+            "description": "A valid API key is required, or the account has no credits balance (see https://mathify.dev/pricing)",
             "content": {
               "application/json": {
                 "schema": {
@@ -515,7 +515,7 @@
             }
           },
           "403": {
-            "description": "A valid API key is required, or the account has no active Mathify subscription",
+            "description": "A valid API key is required, or the account has no credits balance (see https://mathify.dev/pricing)",
             "content": {
               "application/json": {
                 "schema": {
@@ -643,7 +643,7 @@
             }
           },
           "403": {
-            "description": "A valid API key is required, or the account has no active Mathify subscription",
+            "description": "A valid API key is required, or the account has no credits balance (see https://mathify.dev/pricing)",
             "content": {
               "application/json": {
                 "schema": {
@@ -726,7 +726,7 @@
             }
           },
           "403": {
-            "description": "A valid API key is required, or the account has no active Mathify subscription",
+            "description": "A valid API key is required, or the account has no credits balance (see https://mathify.dev/pricing)",
             "content": {
               "application/json": {
                 "schema": {
@@ -805,7 +805,7 @@
             }
           },
           "403": {
-            "description": "A valid API key is required, or the account has no active Mathify subscription",
+            "description": "A valid API key is required, or the account has no credits balance (see https://mathify.dev/pricing)",
             "content": {
               "application/json": {
                 "schema": {
@@ -895,7 +895,7 @@
             }
           },
           "403": {
-            "description": "A valid API key is required, or the account has no active Mathify subscription",
+            "description": "A valid API key is required, or the account has no credits balance (see https://mathify.dev/pricing)",
             "content": {
               "application/json": {
                 "schema": {
@@ -1006,7 +1006,7 @@
             }
           },
           "403": {
-            "description": "A valid API key is required, or the account has no active Mathify subscription",
+            "description": "A valid API key is required, or the account has no credits balance (see https://mathify.dev/pricing)",
             "content": {
               "application/json": {
                 "schema": {
@@ -1094,7 +1094,7 @@
             }
           },
           "403": {
-            "description": "A valid API key is required, or the account has no active Mathify subscription",
+            "description": "A valid API key is required, or the account has no credits balance (see https://mathify.dev/pricing)",
             "content": {
               "application/json": {
                 "schema": {
@@ -1197,7 +1197,7 @@
             }
           },
           "403": {
-            "description": "A valid API key is required, or the account has no active Mathify subscription",
+            "description": "A valid API key is required, or the account has no credits balance (see https://mathify.dev/pricing)",
             "content": {
               "application/json": {
                 "schema": {
@@ -1293,7 +1293,7 @@
             }
           },
           "403": {
-            "description": "A valid API key is required, or the account has no active Mathify subscription",
+            "description": "A valid API key is required, or the account has no credits balance (see https://mathify.dev/pricing)",
             "content": {
               "application/json": {
                 "schema": {
